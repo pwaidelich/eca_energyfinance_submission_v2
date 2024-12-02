@@ -1,18 +1,16 @@
 # Quantifying the shift of public export finance from fossil fuels to renewable energy 
 Code and data for Censkowsky et al. (2024). If you have questions about the code or find any errors/bugs, please contact Paul Waidelich (paul.waidelich[at]gess.ethz.ch, corresponding author).
 
-*Please note that the preliminary version of this repository serves only to ensure maximum transparency regarding our methodology during the review process. Upon acceptance, all scripts and non-proprietary data will be made available in a permanent Zenodo repository.*
-
 ## Organization of the overall project repository
 The repository is organized in accordance to the Code and Software Submission Checklist provided by Nature Research. 
 It features the following elements:
- 1. Information of system requirements
+ 1. Information on system requirements
  2. A brief installation guide
  3. A demo
  4. Instructions for use
  5. Description of scripts in the repository
 
-## (1) Information of system requirements
+## (1) Information on system requirements
 The scripts can be executed on an ordinary computer and require neither substantial computational resources nor parallel processing. Runtime is a few minutes. No non-standard software is required.
 
 For do-Files, we used Stata version 17 and tested that do-Files also run smoothly for Stata version 16. 
@@ -44,7 +42,7 @@ For R version 4.3.1: Download instructions and installation files for different 
 ## (3) Demo 
 Instructions to run on the data: 
 1. Install the right STATA software and version, including the user-defined commands (see above)
-2. Open the Script Element 2 ("Figures"). Note that this is the only script that is designed to 'run smoothly' as a demo with a separately uploaded, censored dataset (10% sample size).
+2. Open the Script Element 2 ("Figures"). Note that this is the only script that is designed to 'run smoothly' as a demo with a separately uploaded, censored, and randomly reshuffled dataset (approx. 10% sample size).
 3. Change the file paths for the current directory according to the following instructions: 
 
    cd "the highest level of this repository"
@@ -58,7 +56,7 @@ Expected runtime: 2 mins
 ## (4) Instructions for use 
 You can run the STATA code on the demo data as described above. 
 
-Note that we cannot provide full access to the proprietary TXF data and hence no full reproducibility of our article. However, we provide a systematic description of all steps taken to generate the final dataset and figures. Below, we describe each step in detail. 
+As outlined in our article's Data Availability statement, we cannot make the proprietary TXF transaction raw data files publicly available and hence the scripts in this repository will result in errors (except for the Demo outlined above). However, we provide a systematic description of all steps taken to generate the final dataset and figures. Below, we describe each step in detail.
 
 
 ## (5) Description of scripts in the repository
@@ -67,35 +65,34 @@ Note that we cannot provide full access to the proprietary TXF data and hence no
 
 Name: `Element1_generate_energy_subset_TXF.do`: appends the data and creates the energy-related subset.
 
-Description: In this DO-file, we generate the final energy data subset. We execute two main objectives: (i) exclusion of all non-energy related deals; and (ii) re-classification of deals that are falsely classified as non-energy related (e.g., LNG tankers). For a definition of 'energy sector' see Supplementary Table 2 and for a detailed re-classification procedure see main manuscript 'Methods - Classification of of energy-related transactions'.
+Description: In this DO-file, we generate the final energy data subset. We execute two main objectives: (i) exclusion of all non-energy related deals; and (ii) re-classification of deals that are falsely classified as non-energy related (e.g., LNG tankers). For a definition of 'energy sector', see Supplementary Table 2 and for a detailed re-classification procedure, see 'Methods - Classification of energy-related transactions' of the main article.
 
 Specifically, we:
 - Import original Excel files and change to STATA data files
-- Import and append two datawaves (2013-2022 and an update for 2023)
+- Import and append two data waves (2013-2022 and an update for 2023)
 - Screen for additional deals in industries not evidently related to energy (e.g., ships or infrastructure) and due re-classification
 - Classify in coarse energy sub-categories coal, oil, gas, oil and gas mixed (fossil fuels) and wind, solar, hydro and other RETs (RETs), and nuclear
 - Classify in value chain elements and finer technology elements
-- Remove all non-energy related deals from the dataset and save a new version
+- Remove all non-energy-related deals from the dataset and save a new version
 - Change key variables from string to numeric (e.g., Year)
 - Inflation-adjust the two key variables (ECA involvement and total deal volume) using the methodology described in the Main manuscript (see 'Methods - Inflation adjustment').  
-- Remove non-official ECAs (see supplementary Table 4 for all organizations that are considered non-official, including those that were part of our original dataset, but that were not active in the energy sector).
+- Remove non-official ECAs (see Supplementary Table 5 for all organizations that are considered non-official, including those that were part of our original dataset but that were not active in the energy sector).
 - Generate switches for additional checks (e.g., domestic financing, guarantees vs loans).
 - Generate additional variables (numeric energy source, type of borrower, periods, total energy finance by period and country, specific variables for Figure 3)
-- Identify the Top 10 energy financing countries based on total energy commitments (to inform order of countries in Fig3)
+- Identify the Top 10 energy financing countries based on total energy commitments (to inform order of countries in Figure 3)
 - Generate specific variables for technologies (coarse and fine versions)
 
 ## Element 2
 
-Name: `Element2_figures.do`: creates Figures 1-4 and serves as code for demo. Unlike Element 1 which requires the original TXF data, this script is designed to 'run smoothly', i.e., for reproduction with a separately uploaded, censored dataset (10% sample size).
+Name: `Element2_figures.do`: creates Figures 1-4 and serves as code for the Demo. Unlike all other Elements, which will result in errors without the original and proprietary TXF transaction data, this script is designed to 'run smoothly' when one uses the separately uploaded, censored and reshuffled Demo data (approx. 10% sample size) instead.
 
 Description: In this DO-file, we:
 - Produce Figures 1-4 (in various subelements).
-- Modifies some of the variables created in Element 1 as per the filtering requirements for a given figure (e.g., subset to guarantees or lending only) 
-- 'Runs smooth' for reviewers that seek to execute the demo analysis using the censored data  
+- Modify some of the variables created in Element 1 as per the filtering requirements for a given figure (e.g., subset to guarantees or lending only) 
 
 ## Element 3
 
-Name: `Element3_SI_generate_subset_OCI.do`: creates the subset of the OCI data used for triangulation in the Supplementary Information. The methodological steps used to subset this dataset are futher described in the SI Note on Methods for Supplementary Figures 1-7.
+Name: `Element3_SI_generate_subset_OCI.do`: creates the subset of the OCI data used for triangulation in the Supplementary Information. The methodological steps used to subset this dataset are further described in the SI's Supplementary Methods for Supplementary Figures 1-7.
 
 Description: In this DO-file, we: 
 - exclude certain sectors not covered by our energy sector definition (e.g., electric vehicles)
@@ -111,49 +108,50 @@ Description: In this R-script, we:
 - export the combined data sets as CSV files under `/data/filled_up_txf_oci`
 
 ## Element 5
-Name: `Element5_SI_figures.do`: creates SI Figures 1-5 and SI Figure 7. These figures notably serve to triangulate TXF data presented in the main manuscript with data openly accessible data by Oil Change International. 
+Name: `Element5_SI_figures.do`: creates Supplementary Figures 1-5 and Supplementary Figure 7. These figures notably serve to triangulate TXF data presented in the main manuscript with openly accessible data from Oil Change International. 
 
 Description: In this DO-file, we:
-- Compare TXF and OCI data based on all commitments disaggregated by fossil commitments, RET commitments, and Grid commitments (Fig SI 1)
-- Replicate Figure 1-3 of the main manuscript using filled up values (SI Figures 3, 4, 5, for methodology see SI Note on Methods for Supplementary Figures 1-7)
-- Generate additional Figures to fill in data gaps (SI Figure, 1, 2a, 2b, 7) 
-- Generate dataframes and graphs about the difference of the two dataframes on a country level for fossil, RET and grid commitments and separated by financial instrument (Fig SI 3a and 3b)
+- Compare TXF and OCI data based on all commitments disaggregated by fossil commitments, RET commitments, and Grid commitments (Supplementary Fig. 1)
+- Replicate Figures 1-3 of the main manuscript using filled-up values (Supplementary Figures 3-5; for methodology, see our SI's Supplementary Methods for Supplementary Figures 1-7)
+- Generate additional Figures to fill in data gaps (Supplementary Figure, 1, 2a, 2b, 7) 
+- Generate data frames and graphs about the difference of the two data frames on a country level for fossil, RET and grid commitments and separated by financial instrument (Supplementary Fig. 3a and 3b)
 
 ## Element 6
 
 Name: `Element6_Censored_datafile.do`: creates the censored demo version of our energy subset (a randomly selected 10% of deals).
 
 Description: In this DO-file, we:
-- Draw a variable `u` at random between 0 and 1 for each unique deal
-- Delete all deals with a variable `u` that is higher than 0.1 (we delete 90% of all deals)
-- Export a censored database with 10% of the original deals   
+- Subset the original dataset randomly to approx. 10% of all deals
+- Remove all columns not required for the Demo DO-file and reshuffle all columns kept
+- Export the censored and reshuffled dataset   
 
 ## Element 7
 
-Name: `Element7_SI tables and notes.do`: creates additional calculations used in the SI Notes and Tables. 
+Name: `Element7_SI tables and notes.do`: creates additional calculations used in the Supplementary Notes and Tables. 
 
 Description: In this DO-file, we:
-- create the statistics used to support the SI Note 2 on Fossil fuel dependent countries
-- create the ECA finance by OECD versus non-OECD countries (SI Table 6 and 7)
+- Create the statistics used to support Supplementary Note 2 on fossil fuel-dependent countries
+- Create the ECA finance by OECD versus non-OECD countries (Supplementary Table 6 and 7)
 
 
 ## Element 8
 
-Name: `Element8_figure_recipientcountry_distribution.R`: creates Figure 5 in R .
+Name: `Element8_figure_recipientcountry_distribution.R`: creates Figure 5 in R.
 
 Description: In this R-script, we:
 - Collapse cumulative ECA commitments by recipient country and technology group (renewables or fossils)
-- Draw maps of recipient country shares using shapefiles from the `rnaturalearth` package (Fig. 5A)
-- Collapse cumulative ECA commitments by deal location (domestic, same region, or different region) and plot as a bar chart (Fig. 5B)
-- Collapse cumulative ECA commitments by phase and income country level (as per World Bank data) of the recipient country and plot as a bar chart (Fig. 5C)
+- Draw maps of recipient country shares using shapefiles from the `rnaturalearth` package (Fig. 5a)
+- Collapse cumulative ECA commitments by deal location (domestic, same region, or different region) and plot as a bar chart (Fig. 5b)
+- Collapse cumulative ECA commitments by phase and income level of the recipient country (as per World Bank data) and plot as a bar chart (Fig. 5c)
 
 ## Data files in the repository
 1. `data/240219 WB Country and Lending Groups.xlsx`: data on the World Bank Country and Lending Groups (used to classify countries into Lower-/Middle-/High-Income in Figure 3c) taken from the World Bank Data Help Desk (URL: https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups).
 2. `data/240801 ISO3-ISO2-codes.xlsx`: data on mapping ISO2 to ISO3 codes (or vice-versa).
-3. `data/240918 IMF IFS - US CPI.xlsx`: Data on the US Consumer Price Index taken from the IMF (URL: https://data.imf.org/?sk=4c514d48-b6ba-49ed-8ab9-52b0c1a0179b&sid=1390030341854).
-4. `data/OCI Public Finance for Energy Database 2024.xlsx`: a version of the OCI Public Finance for Energy database obtained in July 2024.
+3. `data/240918 IMF IFS - US CPI.xlsx`: data on the US Consumer Price Index taken from the IMF (URL: https://data.imf.org/?sk=4c514d48-b6ba-49ed-8ab9-52b0c1a0179b&sid=1390030341854).
+4. `data/OCI Public Finance for Energy Database 2024.xlsx`: a version of the OCI Public Finance for Energy database obtained from OCI in July 2024.
 5. `data/txf_countrynames_iso3_matched.csv`: a manually created data frame that matches the country names in the raw TXF data to standardized ISO3 identifiers.
-6. `data/TXF_data_censored.dta`: 10% sample of TXF data. Please keep confidential and use for review purposes only (to run STATA DO-File to produce all figures, 'Element 2'). To access all data, please contact TXF Limited.
+6. `data/TXF_data_censored.dta`: approx. 10% sample of the raw TXF transaction data but censored and reshuffled (as the data are proprietary), to be used for the Demo (see description above).
+7. `SourceData_SupplementaryFigures.xlsx`: Source Data for Supplementary Fig. 1-7
 
 Date stamps in the filenames indicate the download date.
 
