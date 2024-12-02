@@ -3,37 +3,44 @@
 clear all 
 
 *** Set the working directory
-cd "C:/Users/pwaidelich/Downloads/GitHub - Local/eca_energyfinance"
+cd "/Users/pcenskow/Documents/Full Github Repo/eca_energyfinance-philipp_submission_files 2"
 
 use "data/current_working_file_July24.dta"
+
+*** drop unnecessary variables for (censored) reproduction of Figures
+drop b c borrowerindustry borrowercountry borrowerrating exporter exportercountry exporterindustry ///
+borrowerregion useofproceed wbcountryclassification producttype countryoecdrisk typeoffinancing ///
+typeofcredit isgreen issocial issustainable ag localcurrencyname lendername lenderroleonthedeal ///
+lendercountry lenderregion lendercompanytype lenderinvolvementonthedeali mlainvolvementonthedealin ///
+ecacompanytype green_category social_category tranchelocalcurrencyvolume benchmark pricing ///
+ecaserialno commercialrisk politicalrisk tranch_overallrisk legalname legalroleonthedeal ///
+legalcountry legalinvolvementonthedealin jurisdiction assetindustry assettype manufacturer model msnimo
 
 *** censor key identifiers
      
 replace dealtitle = "XXX"
 replace description = "XXX"
 replace borrower = "XXX"
-replace exporter = "XXX"
-replace lendername = "XXX"
-replace lendercountry = "XXX"
 
 
 *** shuffle key values at random 
 
 ssc install shufflevar
 
-shufflevar tmddealid closingdate dealcountry uniquetrancheid ecaname ecacountry
+ren ecainvolvementonthedealin eca_involvement
 
-drop tmddealid closingdate dealcountry uniquetrancheid ecaname ecacountry
+shufflevar *
 
-ren tmddealid_shuffled tmddealid
-ren closingdate_shuffled closingdate
-ren dealcountry_shuffled dealcountry
-ren uniquetrancheid_shuffled uniquetrancheid
-ren ecaname_shuffled ecaname 
-ren ecacountry_shuffled ecacountry
+keep *_shuffled
 
-order tmddealid closingdate dealcountry uniquetrancheid ecaname ecacountry, after(c)
+foreach var of varlist _all {
+    if strpos("`var'", "_shuffled") {
+        local newname = substr("`var'", 1, strlen("`var'") - strlen("_shuffled"))
+        rename `var' `newname'
+    }
+}
 
+ren eca_involvement ecainvolvementonthedealin
 
 bys tmddealid: gen u = runiform() if _n == 1
 bys tmddealid: egen uu = total(u)
